@@ -1,10 +1,10 @@
 {
-    "name": "sccene",
+    "name": "scene",
     "objects": [
         {
             "type": "MESH",
             "name": "Cube",
-            "tranform": {
+            "transform": {
                 "translation": [
                     0.0,
                     0.0,
@@ -21,12 +21,12 @@
                     1.0
                 ]
             },
-            "file_name": "test2"
+            "file_name": "box"
         },
         {
             "type": "LIGHT",
             "name": "Light",
-            "tranform": {
+            "transform": {
                 "translation": [
                     4.076245307922363,
                     1.0054539442062378,
@@ -47,7 +47,7 @@
         {
             "type": "CAMERA",
             "name": "Camera",
-            "tranform": {
+            "transform": {
                 "translation": [
                     7.358891487121582,
                     -6.925790786743164,
@@ -68,11 +68,11 @@
         {
             "type": "MESH",
             "name": "球",
-            "tranform": {
+            "transform": {
                 "translation": [
-                    4.063111305236816,
-                    8.335402488708496,
-                    0.0
+                    0.0,
+                    6.734877586364746,
+                    6.345643997192383
                 ],
                 "rotation": [
                     0.0,
@@ -85,15 +85,59 @@
                     1.0
                 ]
             },
-            "file_name": "test3"
+            "file_name": "sphere"
         },
         {
             "type": "MESH",
             "name": "ICO球",
-            "tranform": {
+            "transform": {
                 "translation": [
+                    6.813583850860596,
                     0.0,
-                    -8.927846908569336,
+                    -4.256670951843262
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "ico"
+        },
+        {
+            "type": "MESH",
+            "name": "円柱",
+            "transform": {
+                "translation": [
+                    -6.0962629318237305,
+                    0.0,
+                    2.5417532920837402
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "piller"
+        },
+        {
+            "type": "MESH",
+            "name": "円錐",
+            "transform": {
+                "translation": [
+                    7.796515464782715,
+                    -6.257137298583984,
                     0.0
                 ],
                 "rotation": [
@@ -107,7 +151,7 @@
                     1.0
                 ]
             },
-            "file_name": "test1"
+            "file_name": "spike"
         }
     ]
 }

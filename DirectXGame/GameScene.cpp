@@ -1,6 +1,7 @@
 #include "GameScene.h"
 #include "KamataEngine.h"
 
+
 #include <string>
 #include <json.hpp>
 #include <fstream>
@@ -10,6 +11,7 @@
 using namespace KamataEngine;
 
 void GameScene::Initialize() {
+	camera_.Initialize();
 
 	// -----------------------------------------------------
 	//    レベルエディタを格納するための構造体
@@ -49,7 +51,7 @@ void GameScene::Initialize() {
 
 
 	// jsonファイルのパス名
-	const std::string fullpath = std::string("Resources/levels") + "scene.json";
+	const std::string fullpath = std::string("Resources/levels/") + "scene.json";
 
 	// ファイルストリーム
 	std::ifstream file;
@@ -83,7 +85,7 @@ void GameScene::Initialize() {
 	assert(levelData->name == "scene");
 
 	// "object"の全オブジェクトを走査
-	if (nlohmann::json & object : deserialized["object"]) {
+	for (nlohmann::json& object : deserialized["objects"]) {
 
 		// オブジェクト 1つ分の妥当性のチェック
 		assert(object.contains("type"));
@@ -99,11 +101,72 @@ void GameScene::Initialize() {
 
 			// トランスフォームのパラメータ読み込み
 			nlohmann::json& transform = object["transform"];
+			// 平衡移動 "translation"
+			objectData.transform.translation.x = (float)transform["translation"][0];
+			objectData.transform.translation.y = (float)transform["translation"][2];
+			objectData.transform.translation.z = (float)transform["translation"][1];
+			// 回転角 "rotation"
+			objectData.transform.rotation.x = -(float)transform["rotation"][0];
+			objectData.transform.rotation.y = -(float)transform["rotation"][2];
+			objectData.transform.rotation.z = -(float)transform["rotation"][1];
+			// 拡大縮小 "scaling
+			objectData.transform.scaling.x = (float)transform["scaling"][0];
+			objectData.transform.scaling.y = (float)transform["scaling"][2];
+			objectData.transform.scaling.z = (float)transform["scaling"][1];
+
+			// "file_name
+			if (object.contains("file_name")) {
+				objectData.file_name = object["file_name"].get<std::string>();
+			}
 		}
 	}
 
+	// -----------------------------------------------------
+	//    レベルデータからオブジェクトを生成、配置
+	// -----------------------------------------------------
+	for (auto& objectData : levelData->objects) {
+
+		// モデルファイル名 objectData.file_name にあれば入っている ⇒ file_name を元に、持てるデータを特定する
+		Model* model = Model::CreateFromOBJ(objectData.file_name, true);
+
+		WorldTransformEx* worldTransform = new WorldTransformEx();
+		worldTransform->Initialize();
+
+		// 位置の設定 objectData.transform.tranlattion に入っている。
+		worldTransform->translation_ = objectData.transform.translation;
+
+		// 回転の設定 objectData.transform.rotation     に入っている。
+		worldTransform->rotation_ = objectData.transform.rotation;
+
+		// 拡大縮小   objectData.transform.scaling       に入っている。
+		worldTransform->scale_ = objectData.transform.scaling;
+
+		worldTransform->UpDateMatrix();
+
+		instances_.push_back({model, worldTransform});
+	}
 }
 
-void GameScene::Update() {}
+void GameScene::Update() {
+	for (auto& instance : instances_) {
+		instance.worldTransform->UpDateMatrix();
+	}
+}
 
-void GameScene::Draw() {}
+void GameScene::Draw() {
+	DirectXCommon* dxCommon = DirectXCommon::GetInstance();
+
+	Model::PreDraw(dxCommon->GetCommandList());
+	for (auto& instance : instances_) {
+		instance.model->Draw(*instance.worldTransform, camera_);
+	}
+	Model::PostDraw();
+}
+
+void GameScene::Finalize() {
+	for (auto& instance : instances_) {
+		delete instance.model;
+		delete instance.worldTransform;
+	}
+	instances_.clear();
+}
