@@ -4,7 +4,7 @@
 class GameScene {
 	struct ObjectInstance {
 		KamataEngine::Model* model = nullptr;
-		WorldTransformEx* worldTransform=nullptr;
+		WorldTransformEx* worldTransform = nullptr;
 	};
 
 public:
